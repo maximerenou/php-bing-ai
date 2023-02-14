@@ -1,0 +1,18 @@
+{
+    "name": "maximerenou/bing-ai",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "MaximeRenou\\BingAI\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Maxime Renou",
+            "email": "contact@maximerenou.fr"
+        }
+    ],
+    "require": {
+        "ratchet/pawl": "^0.4.1"
+    }
+}
