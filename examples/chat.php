@@ -1,16 +1,17 @@
 <?php
 
+$cookie = "YOUR_COOKIE_HERE"; //@TODO change
+
 require __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set("Europe/Paris");
 
-$cookie = "COOKIE_HERE";
-$id = null;
-
 $ai = new \MaximeRenou\BingAI\BingAI();
 
-$conversation = $ai->createChatConversation($cookie, $id)
+$conversation = $ai->createChatConversation($cookie)
     ->withPreferences('fr-FR', 'fr-FR', 'FR');
+
+\MaximeRenou\BingAI\Tools::$debug = true;
 
 echo 'Type "q" to quit' . PHP_EOL;
 
@@ -23,9 +24,9 @@ while (true) {
 
     echo PHP_EOL;
 
-    $message = new \MaximeRenou\BingAI\Chat\Message($text);
+    $prompt = new \MaximeRenou\BingAI\Chat\Prompt($text);
 
-    list($text, $cards) = $conversation->send($message, function ($text, $cards) {
+    list($text, $cards) = $conversation->ask($prompt, function ($text, $cards) {
         echo "- $text \r";
     });
 

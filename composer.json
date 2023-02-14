@@ -13,6 +13,7 @@
         }
     ],
     "require": {
-        "ratchet/pawl": "^0.4.1"
+        "ratchet/pawl": "^0.4.1",
+        "ext-curl": "*"
     }
 }
