@@ -1,5 +1,6 @@
 {
     "name": "maximerenou/bing-ai",
+    "description": "Bing AI adapter",
     "type": "library",
     "autoload": {
         "psr-4": {
@@ -13,6 +14,7 @@
         }
     ],
     "require": {
+        "php": ">=8.1",
         "ratchet/pawl": "^0.4.1",
         "ext-curl": "*"
     }

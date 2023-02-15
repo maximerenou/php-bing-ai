@@ -1,5 +1,7 @@
 # Bing AI
 
+> For now you need to have access to Bing Chat open beta. Or grab the cookie from someone who has access.
+
 ## Install
 
     composer require maximerenou/bing-ai
@@ -26,11 +28,13 @@ list($text, $messages) = $conversation->ask(new Prompt("Hello World"));
 // Example 2: async
 // $text - Incomplete text version
 // $messages - Incomplete messages fleet
-list($final_text, $final_messages) = $conversation->ask($prompt, function ($text, $cards) {
+list($final_text, $final_messages) = $conversation->ask($prompt, function ($text, $messages) {
     echo $text;
 });
 
 ```
+
+Every "card" from Bing AI is fetched. Check `Message.php` to learn more about its format.
 
 If you want to resume a previous conversation, you can retrieve its identifiers:
 ```php

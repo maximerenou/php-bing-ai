@@ -11,7 +11,8 @@ $ai = new \MaximeRenou\BingAI\BingAI();
 $conversation = $ai->createChatConversation($cookie)
     ->withPreferences('fr-FR', 'fr-FR', 'FR');
 
-\MaximeRenou\BingAI\Tools::$debug = true;
+\MaximeRenou\BingAI\Tools::$debug = false; // Set true for 
+verbose
 
 echo 'Type "q" to quit' . PHP_EOL;
 
