@@ -11,8 +11,8 @@ class BingAI
         //
     }
 
-    public function createChatConversation($cookie, $data = null)
+    public function createChatConversation($cookie, $data = null, $invocations = 0)
     {
-        return new Conversation($cookie, $data);
+        return new Conversation($cookie, $data, $invocations);
     }
 }

@@ -6,7 +6,7 @@ class Message implements \JsonSerializable
 {
     public static function fromPrompt(Prompt $prompt)
     {
-        $message = new self(true);
+        $message = new self();
         $message->text = $prompt->text;
         $message->type = MessageType::Prompt;
         return $message;
@@ -14,7 +14,7 @@ class Message implements \JsonSerializable
 
     public static function fromData($data)
     {
-        $message = new self($data['author'] == 'user', $data);
+        $message = new self($data);
         $message->id = $data['messageId'];
 
         switch ($data['messageType'] ?? '') {
@@ -31,7 +31,7 @@ class Message implements \JsonSerializable
                 $message->type = MessageType::RenderRequest;
                 break;
             default:
-                $message->type = MessageType::Answer;
+                $message->type = $data['author'] == 'user' ? MessageType::Prompt : MessageType::Answer;
         }
 
         if (! empty($data['text']))
@@ -47,7 +47,6 @@ class Message implements \JsonSerializable
     public $type;
 
     public function __construct(
-        public $local = false,
         public $data = null
     ) {}
 
@@ -67,7 +66,6 @@ class Message implements \JsonSerializable
             'text' => $this->text,
             'formatted_text' => $this->toText(),
             'type' => $this->type,
-            'local' => $this->local,
             'data' => $this->data
         ];
     }

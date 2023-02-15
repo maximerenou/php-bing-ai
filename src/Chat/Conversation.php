@@ -38,7 +38,7 @@ class Conversation
 
     //
 
-    public function __construct($cookie, $identifiers = null)
+    public function __construct($cookie, $identifiers = null, $invocations = 0)
     {
         if (! is_array($identifiers))
             $identifiers = $this->createIdentifiers($cookie);
@@ -46,6 +46,7 @@ class Conversation
         $this->id = $identifiers['conversationId'];
         $this->client_id = $identifiers['clientId'];
         $this->signature = $identifiers['conversationSignature'];
+        $this->invocations = $invocations - 1;
     }
 
     public function getIdentifiers()
