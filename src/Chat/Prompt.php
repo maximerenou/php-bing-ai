@@ -4,6 +4,8 @@ namespace MaximeRenou\BingAI\Chat;
 
 class Prompt
 {
+    public $cache = true;
+
     public $locale;
 
     public $market;
@@ -19,6 +21,12 @@ class Prompt
         $this->locale = $locale;
         $this->market = $market;
         $this->region = $region;
+        return $this;
+    }
+
+    public function withoutCache()
+    {
+        $this->cache = false;
         return $this;
     }
 }

@@ -176,18 +176,24 @@ class Conversation
                 ]*/
             ];
 
+            $options = [
+                'nlu_direct_response_filter',
+                'deepleo',
+                'enable_debug_commands',
+                'disable_emoji_spoken_text',
+                'responsible_ai_policy_235',
+                'enablemm'
+            ];
+
+            if (! $message->cache) {
+                $options[] = "nocache";
+            }
+
             $params = [
                 'arguments' => [
                     [
                         'source' => 'cib',
-                        'optionsSets' => [
-                            'nlu_direct_response_filter',
-                            'deepleo',
-                            'enable_debug_commands',
-                            'disable_emoji_spoken_text',
-                            'responsible_ai_policy_235',
-                            'enablemm'
-                        ],
+                        'optionsSets' => $options,
                         'allowedMessageTypes' => [
                             'Chat',
                             'InternalSearchQuery',

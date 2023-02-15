@@ -2,9 +2,9 @@
 
 > For now you need to have access to Bing Chat open beta. Or grab the cookie from someone who has access.
 
-This is Composer package for using Bing AI technology.
+This is an unofficial Composer package for using Bing AI technology.
 
-It comes with no warranty of continuous stability, and has been made using reverse engineering.
+It comes with no warranty of continuous stability.
 
 ## Install
 
@@ -50,6 +50,22 @@ $identifiers = $conversation->getIdentifiers();
 $conversation = $ai->createChatConversation($cookie, $identifiers, 1);
 ```
 
+#### Text generation
+
+Note: to prevent answers like "I have already written \[...]", you can disable cache for your prompt with `withoutCache()`.
+
+```php
+$subject = "Internet memes";
+$tone = 'funny';
+$type = 'blog post';
+$length = 'short';
+
+$prompt = new Prompt("Please write a *$length* *$type* in a *$tone* style about `$subject`. Please wrap the $type in a markdown codeblock.");
+
+$conversation->ask($prompt->withoutCache(), ...)
+```
+
 ---------------------------------------
 
-Bing is a trademark of Microsoft. This repository is not official.
+Using Bing AI API outside bing.com may violate Bing AI terms. Use it at your own risk.
+Bing is a trademark of Microsoft.
