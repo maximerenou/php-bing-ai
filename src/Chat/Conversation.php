@@ -156,13 +156,15 @@ class Conversation
             $connection->send(json_encode(['type' => 6]) . self::END_CHAR);
 
             $trace_id = bin2hex(random_bytes(16));
-            $location = "lat:47.639557;long:-122.128159;re=1000m;";
+            $location = null;
 
             if (is_array($this->geolocation)) {
-                //$location = "lat:{$this->geolocation[0]};long={$this->geolocation[1]};re={$this->geolocation[2]}m;";
+                $location = "lat:{$this->geolocation[0]};long={$this->geolocation[1]};re={$this->geolocation[2]}m;";
+                // Example format: "lat:47.639557;long:-122.128159;re=1000m;";
             }
 
             $locationHints = [
+                // Example hint
                 /*[
                     "country" => "France",
                     "timezoneoffset" => 1,
