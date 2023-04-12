@@ -13,7 +13,6 @@ $conversation = $ai->createChatConversation($cookie)
 
 \MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
 
-echo "Warning: Bing AI is currently limited to 5 questions per sessions." . PHP_EOL;
 echo 'Type "q" to quit' . PHP_EOL;
 
 while (true) {
@@ -42,6 +41,15 @@ while (true) {
 
     // Print final answer
     echo "- $text" . PHP_EOL;
+
+    $remaining = $conversation->getRemainingMessages();
+
+    if ($remaining != 0) {
+        echo "[$remaining remaining messages]" . PHP_EOL;
+    } else {
+        echo "[Limit reached]" . PHP_EOL;
+        break;
+    }
 }
 
 exit(0);

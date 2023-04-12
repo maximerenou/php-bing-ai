@@ -36,6 +36,10 @@ class Conversation
 
     protected $current_messages;
 
+    protected $user_messages_count;
+
+    protected $max_messages_count;
+
     //
 
     public function __construct($cookie, $identifiers = null, $invocations = 0)
@@ -70,6 +74,14 @@ class Conversation
     {
         $this->geolocation = [$latitude, $longitude, $radius];
         return $this;
+    }
+
+    public function getRemainingMessages()
+    {
+        if (is_null($this->max_messages_count))
+            return 1;
+
+        return $this->max_messages_count - $this->user_messages_count;
     }
 
     public function createIdentifiers($cookie)
@@ -253,8 +265,20 @@ class Conversation
                 $messages = [];
 
                 foreach ($object['arguments'] as $argument) {
-                    foreach ($argument['messages'] as $messageData) {
-                        $messages[] = Message::fromData($messageData);
+                    if (isset($argument['messages']) && is_array($argument['messages'])) {
+                        foreach ($argument['messages'] as $messageData) {
+                            $messages[] = Message::fromData($messageData);
+                        }
+                    }
+
+                    if (isset($argument['throttling']) && is_array($argument['throttling'])) {
+                        if (isset($argument['throttling']['maxNumUserMessagesInConversation'])) {
+                            $this->max_messages_count = $argument['throttling']['maxNumUserMessagesInConversation'];
+                        }
+
+                        if (isset($argument['throttling']['numUserMessagesInConversation'])) {
+                            $this->user_messages_count = $argument['throttling']['numUserMessagesInConversation'];
+                        }
                     }
                 }
 
@@ -278,8 +302,20 @@ class Conversation
             case 2: // Global result
                 $this->current_messages = [];
 
-                foreach ($object['item']['messages'] as $messageData) {
-                    $this->current_messages[] = Message::fromData($messageData);
+                if (isset($object['item']['messages']) && is_array($object['item']['messages'])) {
+                    foreach ($object['item']['messages'] as $messageData) {
+                        $this->current_messages[] = Message::fromData($messageData);
+                    }
+                }
+
+                if (isset($object['item']['throttling']) && is_array($object['item']['throttling'])) {
+                    if (isset($object['item']['throttling']['maxNumUserMessagesInConversation'])) {
+                        $this->max_messages_count = $object['item']['throttling']['maxNumUserMessagesInConversation'];
+                    }
+
+                    if (isset($object['item']['throttling']['numUserMessagesInConversation'])) {
+                        $this->user_messages_count = $object['item']['throttling']['numUserMessagesInConversation'];
+                    }
                 }
                 break;
             case 3: // Answer ended

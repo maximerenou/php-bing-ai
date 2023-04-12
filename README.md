@@ -1,7 +1,5 @@
 # Bing AI client
 
-> For now you need to have access to Bing Chat open beta. Or grab the cookie from someone who has access.
-
 This is an unofficial Composer package for using Bing AI technology.
 
 It comes with no warranty of continuous stability.
@@ -48,6 +46,18 @@ $identifiers = $conversation->getIdentifiers();
 // ...
 // Resume conversation with $identifiers parameter, and number of previous questions
 $conversation = $ai->createChatConversation($cookie, $identifiers, 1);
+```
+
+#### Throttling
+
+Bing is limiting messages count per conversations. You can monitor it by calling `getRemainingMessages()` after every interaction.
+
+```php
+$remaining = $conversation->getRemainingMessages();
+
+if ($remaining === 0) {
+    // You reached the limit
+}
 ```
 
 #### Text generation
