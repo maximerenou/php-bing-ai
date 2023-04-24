@@ -40,9 +40,10 @@ Edit and run `examples/chat.php` to test it.
 use MaximeRenou\BingAI\BingAI;
 use MaximeRenou\BingAI\Chat\Prompt;
 
-$ai = new BingAI;
 // $cookie - your "_U" cookie from bing.com
-$conversation = $ai->createChatConversation($cookie);
+$ai = new BingAI($cookie);
+
+$conversation = $ai->createChatConversation();
 
 // $text - Text-only version of Bing's answer
 // $messages - Message objects array
@@ -70,7 +71,7 @@ list($final_text, $final_messages) = $conversation->ask($prompt, function ($text
   <summary>Locale and location preferences</summary>
 
 ```php
-$conversation = $ai->createChatConversation($cookie)
+$conversation = $ai->createChatConversation()
     ->withLocation($latitude, $longitude, $radius) // Optional
     ->withPreferences('fr-FR', 'fr-FR', 'FR'); // Optional
 ```
@@ -87,8 +88,8 @@ If you want to resume a previous conversation, you can retrieve its identifiers:
 $identifiers = $conversation->getIdentifiers();
 
 // ...
-// Resume conversation with $identifiers parameter, and number of previous questions
-$conversation = $ai->createChatConversation($cookie, $identifiers, 1);
+// Resume conversation with $identifiers parameter, and number of previous questions asked
+$conversation = $ai->resumeChatConversation($identifiers, 1);
 ```
 
 </details> 
@@ -132,14 +133,13 @@ if ($remaining === 0) {
 
 Edit and run `examples/images.php` to test it.
 
-> Image generation becomes slower after using it a few times. Bing limits the number of images generated fast per user.
-
 ```php
 use MaximeRenou\BingAI\BingAI;
 
-$ai = new BingAI;
 // $cookie - your "_U" cookie from bing.com
-$creator = $ai->createImages($cookie, "A 3D teddy bear");
+$ai = new BingAI($cookie);
+
+$creator = $ai->createImages("A 3D teddy bear");
 
 $creator->wait();
 
@@ -149,20 +149,34 @@ if (! $creator->hasFailed()) {
 }
 ```
 
+> Image generation can become slower after consuming all of your "boosts". Check the section below to stay aware of your remaining boosts.
+
+<details>
+  <summary>Check remaining boosts</summary>
+
+```php
+$creator = $ai->getImageCreator();
+
+$remaining_boosts = $creator->getRemainingBoosts();
+```
+
+</details>
+
 <details>
   <summary>Asynchronous generation</summary>
 You may quit after calling `createImages()` and check generation later using its ID:
 
 ```php
 $prompt = "A 3D teddy bear";
-$creator = $ai->createImages($cookie, $prompt);
+$creator = $ai->createImages($prompt);
 $generation_id = $creator->getGenerationId();
 
 // ...
 
-$creator = new ImageCreator($cookie);
+$creator = $ai->getImageCreator();
 $creator->resume($generation_id, $prompt);
 ```
+
 </details>
 
 <details>
@@ -174,6 +188,7 @@ do {
     sleep(1);
 } while ($creator->isGenerating());
 ```
+
 </details>
 
 ---------------------------------------

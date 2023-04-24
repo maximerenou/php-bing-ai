@@ -4,9 +4,13 @@ $cookie = "YOUR_COOKIE_HERE"; //@TODO change
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$ai = new \MaximeRenou\BingAI\BingAI();
+$ai = new \MaximeRenou\BingAI\BingAI($cookie);
 
 \MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
+
+$boosts = $ai->getImageCreator()->getRemainingBoosts();
+
+echo "You have $boosts remaining boosts." . PHP_EOL;
 
 echo 'Type "q" to quit' . PHP_EOL;
 
@@ -16,7 +20,7 @@ $text = rtrim(fgets(STDIN));
 if ($text == 'q')
     exit(0);
 
-$creator = $ai->createImages($cookie, $text);
+$creator = $ai->createImages($text);
 
 echo 'Generating...' . PHP_EOL;
 

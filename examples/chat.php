@@ -6,10 +6,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set("Europe/Paris");
 
-$ai = new \MaximeRenou\BingAI\BingAI();
+$ai = new \MaximeRenou\BingAI\BingAI($cookie);
 
-$conversation = $ai->createChatConversation($cookie)
-    ->withPreferences('fr-FR', 'fr-FR', 'FR');
+$conversation = $ai->createChatConversation();
 
 \MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
 

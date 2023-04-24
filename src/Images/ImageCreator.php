@@ -134,6 +134,28 @@ class ImageCreator
         return $this->generating;
     }
 
+    public function getRemainingBoosts()
+    {
+        $request = curl_init();
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($request, CURLOPT_URL, "https://www.bing.com/images/create");
+        curl_setopt($request, CURLOPT_HTTPHEADER, [
+            'cookie: _U=' . $this->cookie,
+            'method: GET',
+            'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            "accept-language: en;q=0.9",
+        ]);
+
+        $data = curl_exec($request);
+        curl_close($request);
+
+        if (! is_string($data) || ! preg_match('/<div id="token_bal" aria-label="[^"]+">([0-9]+)<\/div>/', $data, $matches))
+            return 0;
+
+        return intval($matches[1]);
+    }
+
     public function wait()
     {
         while (! $this->hasFailed()) {

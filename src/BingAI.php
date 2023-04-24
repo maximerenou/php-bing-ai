@@ -7,20 +7,30 @@ use MaximeRenou\BingAI\Images\ImageCreator;
 
 class BingAI
 {
-    public function __construct()
+    protected $cookie;
+
+    public function __construct($cookie)
     {
-        //
+        $this->cookie = $cookie;
     }
 
-    public function createChatConversation($cookie, $data = null, $invocations = 0)
+    public function createChatConversation($data = null)
     {
-        return new Conversation($cookie, $data, $invocations);
+        return new Conversation($this->cookie, $data, 0);
     }
 
-    public function createImages($cookie, $prompt)
+    public function resumeChatConversation($data = null, $invocations = 1)
     {
-        $creator = new ImageCreator($cookie);
+        return new Conversation($this->cookie, $data, $invocations);
+    }
 
-        return $creator->create($prompt);
+    public function getImageCreator()
+    {
+        return new ImageCreator($this->cookie);
+    }
+
+    public function createImages($prompt)
+    {
+        return $this->getImageCreator()->create($prompt);
     }
 }
