@@ -17,6 +17,19 @@ _It comes with no warranty of continuous stability._
 
 First, you need to sign in on bing.com and get your `_U` cookie.
 
+<details>
+  <summary>How to get this cookie?</summary>
+
+1. Navigate to bing.com
+2. Sign in using your Microsoft account
+3. Back on bing.com, right-click and select "Inspect" - the browser console appears
+4. Go to "Application" tab
+5. Select "Cookies" > "https://www.bing.com" in the sidebar
+6. Search for "_U" cookie
+7. Copy its content
+
+</details> 
+
 ---------------------------------------
 
 ### Chat AI
@@ -29,27 +42,46 @@ use MaximeRenou\BingAI\Chat\Prompt;
 
 $ai = new BingAI;
 // $cookie - your "_U" cookie from bing.com
-$conversation = $ai->createChatConversation($cookie)
-    ->withLocation($latitude, $longitude, $radius) // Optional
-    ->withPreferences('fr-FR', 'fr-FR', 'FR'); // Optional
+$conversation = $ai->createChatConversation($cookie);
 
-// Example 1: sync
 // $text - Text-only version of Bing's answer
 // $messages - Message objects array
 list($text, $messages) = $conversation->ask(new Prompt("Hello World"));
+```
 
-// Example 2: async
+_Every "card" from Bing AI is fetched. Check `Message.php` to learn more about its format._
+
+<details>
+  <summary>Real-time / progressive answer</summary>
+
+You may pass a function as second argument to get real-time progression:
+
+```php
 // $text - Incomplete text version
 // $messages - Incomplete messages fleet
 list($final_text, $final_messages) = $conversation->ask($prompt, function ($text, $messages) {
     echo $text;
 });
-
 ```
 
-Every "card" from Bing AI is fetched. Check `Message.php` to learn more about its format.
+</details> 
+
+<details>
+  <summary>Locale and location preferences</summary>
+
+```php
+$conversation = $ai->createChatConversation($cookie)
+    ->withLocation($latitude, $longitude, $radius) // Optional
+    ->withPreferences('fr-FR', 'fr-FR', 'FR'); // Optional
+```
+
+</details> 
+
+<details>
+  <summary>Resume a conversation</summary>  
 
 If you want to resume a previous conversation, you can retrieve its identifiers:
+
 ```php
 // Get current identifiers
 $identifiers = $conversation->getIdentifiers();
@@ -59,21 +91,10 @@ $identifiers = $conversation->getIdentifiers();
 $conversation = $ai->createChatConversation($cookie, $identifiers, 1);
 ```
 
-#### Throttling
+</details> 
 
-Bing is limiting messages count per conversations. You can monitor it by calling `getRemainingMessages()` after every interaction.
-
-```php
-$remaining = $conversation->getRemainingMessages();
-
-if ($remaining === 0) {
-    // You reached the limit
-}
-```
-
-#### Text generation
-
-Note: to prevent answers like "I have already written \[...]", you can disable cache for your prompt with `withoutCache()`.
+<details>
+  <summary>Text generation</summary>
 
 ```php
 $subject = "Internet memes";
@@ -85,6 +106,25 @@ $prompt = new Prompt("Please write a *$length* *$type* in a *$tone* style about 
 
 $conversation->ask($prompt->withoutCache(), ...)
 ```
+
+> To prevent answers like "I have already written \[...]", you can disable cache for your prompt with `withoutCache()`.
+
+</details>
+
+<details>
+  <summary>Throttling</summary>
+
+Bing is limiting messages count per conversations. You can monitor it by calling `getRemainingMessages()` after every interaction.
+
+```php
+$remaining = $conversation->getRemainingMessages();
+
+if ($remaining === 0) {
+    // You reached the limit
+}
+```
+
+</details>
 
 ---------------------------------------
 
@@ -101,13 +141,7 @@ $ai = new BingAI;
 // $cookie - your "_U" cookie from bing.com
 $creator = $ai->createImages($cookie, "A 3D teddy bear");
 
-// Example 1: automatically wait while generating
 $creator->wait();
-
-// Example 2: manually wait while generating
-do {
-    sleep(1);
-} while ($creator->isGenerating());
 
 // Finally, get images URLs
 if (! $creator->hasFailed()) {
@@ -115,6 +149,8 @@ if (! $creator->hasFailed()) {
 }
 ```
 
+<details>
+  <summary>Asynchronous generation</summary>
 You may quit after calling `createImages()` and check generation later using its ID:
 
 ```php
@@ -127,6 +163,18 @@ $generation_id = $creator->getGenerationId();
 $creator = new ImageCreator($cookie);
 $creator->resume($generation_id, $prompt);
 ```
+</details>
+
+<details>
+  <summary>Manually wait</summary>
+Instead of calling `$creator->wait();` you can loop by yourself:
+
+```php
+do {
+    sleep(1);
+} while ($creator->isGenerating());
+```
+</details>
 
 ---------------------------------------
 
