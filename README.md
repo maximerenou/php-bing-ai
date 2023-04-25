@@ -2,15 +2,15 @@
 
 # Bing AI client
 
-This is an unofficial Composer package for using **Bing AI**, including **Chat (GPT-4)** and **Image Creator (DALL-E)**.
+[![Latest Stable Version](https://img.shields.io/github/v/release/maximerenou/php-bing-ai)](https://packagist.org/packages/maximerenou/bing-ai)
+[![PHP version](https://img.shields.io/packagist/dependency-v/maximerenou/bing-ai/php)](https://packagist.org/packages/maximerenou/bing-ai)
+[![cURL extension required](https://img.shields.io/packagist/dependency-v/maximerenou/bing-ai/ext-curl)](https://packagist.org/packages/maximerenou/bing-ai)
 
-_It comes with no warranty of continuous stability._
+This is an unofficial Composer package for using **Bing AI**, including **Chat (GPT-4)** and **Image Creator (DALL-E)**.
 
 ## Installation
 
     composer require maximerenou/bing-ai
-
-Currently, the required PHP minimum version is PHP **7.1**. cURL extension is required.
 
 ## Usage
 
@@ -36,7 +36,7 @@ First, you need to sign in on bing.com and get your `_U` cookie.
 
 ### Chat AI
 
-Edit and run `examples/chat.php` to test it.
+**Demo**: edit and run `examples/chat.php` to test it.
 
 ```php
 use MaximeRenou\BingAI\BingAI;
@@ -52,7 +52,8 @@ $conversation = $ai->createChatConversation();
 list($text, $messages) = $conversation->ask(new Prompt("Hello World"));
 ```
 
-_Every "card" from Bing AI is fetched. Check `Message.php` to learn more about its format._
+> Every "card" from Bing AI is fetched. Check `Message.php` to learn more 
+about its format.
 
 <details>
   <summary>Real-time / progressive answer</summary>
@@ -133,7 +134,7 @@ if ($remaining === 0) {
 
 ### Image Creator
 
-Edit and run `examples/images.php` to test it.
+**Demo**: edit and run `examples/images.php` to test it.
 
 ```php
 use MaximeRenou\BingAI\BingAI;
