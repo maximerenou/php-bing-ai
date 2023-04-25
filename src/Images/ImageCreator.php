@@ -7,15 +7,10 @@ use MaximeRenou\BingAI\Tools;
 class ImageCreator
 {
     private $cookie;
-
     private $generation_id;
-
     private $prompt;
-
     private $failed = false;
-
     private $generating = false;
-
     private $images = [];
 
     public function __construct($cookie)

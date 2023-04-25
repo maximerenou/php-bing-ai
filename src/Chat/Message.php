@@ -45,10 +45,12 @@ class Message implements \JsonSerializable
     public $id;
     public $text;
     public $type;
+    public $data;
 
-    public function __construct(
-        public $data = null
-    ) {}
+    public function __construct($data = null)
+    {
+        $this->data = $data;
+    }
 
     public function toText()
     {

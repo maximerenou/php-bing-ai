@@ -10,6 +10,8 @@ _It comes with no warranty of continuous stability._
 
     composer require maximerenou/bing-ai
 
+Currently, the required PHP minimum version is PHP **7.1**. cURL extension is required.
+
 ## Usage
 
 - [Chat AI](#chat-ai)

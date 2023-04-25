@@ -2,12 +2,12 @@
 
 namespace MaximeRenou\BingAI\Chat;
 
-enum MessageType: string
+class MessageType
 {
-    case Answer = "answer";
-    case Prompt = "prompt";
-    case SearchQuery = "search_query";
-    case SearchResult = "search_result";
-    case Loader = "loader";
-    case RenderRequest = "render_request";
+    const Answer = "answer";
+    const Prompt = "prompt";
+    const SearchQuery = "search_query";
+    const SearchResult = "search_result";
+    const Loader = "loader";
+    const RenderRequest = "render_request";
 }

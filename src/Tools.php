@@ -4,7 +4,7 @@ namespace MaximeRenou\BingAI;
 
 class Tools
 {
-    public static bool $debug = false;
+    public static $debug = false;
 
     public static function generateUUID()
     {

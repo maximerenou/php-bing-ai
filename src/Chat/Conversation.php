@@ -9,38 +9,23 @@ class Conversation
     const END_CHAR = '';
 
     // Conversation IDs
-
     public $id;
-
     public $client_id;
-
     public $signature;
 
     // User preferences
-
     public $locale = 'en-US';
-
     public $market = 'en-US';
-
     public $region = 'US';
-
     public $geolocation = null;
 
     // Conversation data
-
     protected $invocations = -1;
-
     protected $current_started;
-
     protected $current_text;
-
     protected $current_messages;
-
     protected $user_messages_count;
-
     protected $max_messages_count;
-
-    //
 
     public function __construct($cookie, $identifiers = null, $invocations = 0)
     {
@@ -156,8 +141,14 @@ class Conversation
     public function handlePacket($raw, $connection, $message, $callback)
     {
         $objects = explode(self::END_CHAR, $raw);
-        $objects = array_map(fn ($object) => json_decode($object, true), $objects);
-        $objects = array_filter($objects, fn ($value) => is_array($value));
+
+        $objects = array_map(function ($object) {
+            return json_decode($object, true);
+        }, $objects);
+
+        $objects = array_filter($objects, function ($value) {
+            return is_array($value);
+        });
 
         if (count($objects) === 0) {
             return;

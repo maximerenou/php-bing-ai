@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=7.1",
         "ratchet/pawl": "^0.4.1",
         "ext-curl": "*"
     }
