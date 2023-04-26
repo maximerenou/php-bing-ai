@@ -36,6 +36,8 @@ First, you need to sign in on bing.com and get your `_U` cookie.
 
 ### Chat AI
 
+![Chat demo](examples/demo-chat.gif)
+
 **Demo**: edit and run `examples/chat.php` to test it.
 
 ```php
@@ -133,6 +135,8 @@ if ($remaining === 0) {
 ---------------------------------------
 
 ### Image Creator
+
+![Image Creator demo](examples/demo-images.gif)
 
 **Demo**: edit and run `examples/images.php` to test it.
 

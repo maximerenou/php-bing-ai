@@ -2,6 +2,11 @@
 
 $cookie = "YOUR_COOKIE_HERE"; //@TODO change
 
+if ($cookie == 'YOUR_COOKIE_HERE') {
+    echo 'Please add your _U cookie to chat.php (line 3)' . PHP_EOL;
+    exit(1);
+}
+
 require __DIR__ . '/../vendor/autoload.php';
 
 date_default_timezone_set("Europe/Paris");
