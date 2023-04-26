@@ -71,10 +71,7 @@ class Conversation
 
     public function createIdentifiers($cookie)
     {
-        $request = curl_init();
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_URL, "https://www.bing.com/turing/conversation/create");
-        curl_setopt($request, CURLOPT_HTTPHEADER, [
+        $data = Tools::request("https://www.bing.com/turing/conversation/create", [
             'cookie: _U=' . $cookie,
             'method: GET',
             'accept: application/json',
@@ -83,8 +80,7 @@ class Conversation
             'x-ms-client-request-id' => Tools::generateUUID(),
         ]);
 
-        $data = json_decode(curl_exec($request), true);
-        curl_close($request);
+        $data = json_decode($data, true);
 
         if (! is_array($data) || ! isset($data['result']) || ! isset($data['result']['value']) || $data['result']['value'] != 'Success')
             throw new \Exception("Failed to init conversation");

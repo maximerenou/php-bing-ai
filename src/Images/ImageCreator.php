@@ -32,28 +32,17 @@ class ImageCreator
         $this->prompt = $prompt;
 
         $prompt_encoded = urlencode($prompt);
-        $rt = 4;
-
-        $request = curl_init();
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($request, CURLOPT_POST, 1);
-        curl_setopt($request, CURLOPT_POSTFIELDS, "q=$prompt_encoded&qs=ds");
-        curl_setopt($request, CURLOPT_URL, "https://www.bing.com/images/create?q=$prompt_encoded&rt=$rt&FORM=GENCRE");
-        curl_setopt($request, CURLOPT_HTTPHEADER, [
+        $url = "https://www.bing.com/images/create?q=$prompt_encoded&rt=4&FORM=GENCRE";
+        $headers = [
             'cookie: _U=' . $this->cookie,
             'method: POST',
             'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             "accept-language: en;q=0.9",
             'content-type: application/x-www-form-urlencoded',
             'referer: https://www.bing.com/images/create?FORM=GENILP'
-        ]);
+        ];
 
-        curl_exec($request);
-        $url = curl_getinfo($request, CURLINFO_EFFECTIVE_URL);
-        curl_close($request);
-
-        Tools::debug("URL $url");
+        list($data, $request, $url) = Tools::request($url, $headers, "q=$prompt_encoded&qs=ds", true);
 
         $query = parse_url($url, PHP_URL_QUERY);
         $params = [];
@@ -89,15 +78,9 @@ class ImageCreator
             return false;
 
         $prompt_encoded = urlencode($this->prompt);
-        $url = "https://www.bing.com/images/create/async/results/{$this->generation_id}?q=$prompt_encoded";
+        $url = "https://www.bing.com/images/create/async/results/{$this->generation_id}?q={$prompt_encoded}";
 
-        Tools::debug($url);
-
-        $request = curl_init();
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($request, CURLOPT_URL, $url);
-        curl_setopt($request, CURLOPT_HTTPHEADER, [
+        $data = Tools::request($url, [
             'cookie: _U=' . $this->cookie,
             'method: GET',
             'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
@@ -106,13 +89,8 @@ class ImageCreator
             'referer: https://www.bing.com/images/create?FORM=GENILP'
         ]);
 
-        $data = curl_exec($request);
-        curl_close($request);
-
         if (! is_string($data))
             return $this->generating;
-
-        Tools::debug($data);
 
         if (preg_match_all('/(https:\/\/th.bing\.com\/th\/id\/[A-Za-z0-9._-]+)\?/', $data, $matches)) {
             $this->images = $matches[1];
@@ -131,19 +109,12 @@ class ImageCreator
 
     public function getRemainingBoosts()
     {
-        $request = curl_init();
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($request, CURLOPT_URL, "https://www.bing.com/images/create");
-        curl_setopt($request, CURLOPT_HTTPHEADER, [
+        $data = Tools::request("https://www.bing.com/images/create", [
             'cookie: _U=' . $this->cookie,
             'method: GET',
             'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
             "accept-language: en;q=0.9",
         ]);
-
-        $data = curl_exec($request);
-        curl_close($request);
 
         if (! is_string($data) || ! preg_match('/<div id="token_bal" aria-label="[^"]+">([0-9]+)<\/div>/', $data, $matches))
             return 0;

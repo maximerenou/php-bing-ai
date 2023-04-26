@@ -20,4 +20,29 @@ class Tools
         if (self::$debug)
             echo "[DEBUG] $message\n";
     }
+
+    public static function request($url, $headers = [], $data = null, $return_request = false)
+    {
+        $request = curl_init();
+        
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($request, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($request, CURLOPT_URL, $url);
+        curl_setopt($request, CURLOPT_HTTPHEADER, $headers);
+
+        if (! is_null($data)) {
+            curl_setopt($request, CURLOPT_POST, 1);
+            curl_setopt($request, CURLOPT_POSTFIELDS, $data);
+        }
+
+        $data = curl_exec($request);
+        $url = curl_getinfo($request, CURLINFO_EFFECTIVE_URL);
+        curl_close($request);
+
+        if ($return_request) {
+            return [$data, $request, $url];
+        }
+
+        return $data;
+    }
 }
