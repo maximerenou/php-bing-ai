@@ -6,7 +6,7 @@
 [![PHP version](https://img.shields.io/packagist/dependency-v/maximerenou/bing-ai/php)](https://packagist.org/packages/maximerenou/bing-ai)
 [![cURL extension required](https://img.shields.io/packagist/dependency-v/maximerenou/bing-ai/ext-curl)](https://packagist.org/packages/maximerenou/bing-ai)
 
-This is an unofficial Composer package for using **Bing AI**, including **Chat (GPT-4)** and **Image Creator (DALL-E)**.
+This is an unofficial PHP client for **Bing AI**, including **Chat (GPT-4)** and **Image Creator (DALL-E)**.
 
 ## Installation
 
@@ -32,13 +32,26 @@ First, you need to sign in on bing.com and get your `_U` cookie.
 
 </details> 
 
+<details>
+  <summary>How to check if my cookie is working properly?</summary>
+
+```php
+use MaximeRenou\BingAI\BingAI;
+
+// $cookie - your "_U" cookie from bing.com
+$ai = new BingAI($cookie);
+$valid = $ai->checkCookie();
+```
+
+</details> 
+
 ---------------------------------------
 
 ### Chat AI
 
 ![Chat demo](examples/demo-chat.gif)
 
-**Demo**: edit and run `examples/chat.php` to test it.
+**Demo**: clone this repo, edit and run `examples/chat.php` to test it.
 
 ```php
 use MaximeRenou\BingAI\BingAI;
@@ -138,7 +151,7 @@ if ($remaining === 0) {
 
 ![Image Creator demo](examples/demo-images.gif)
 
-**Demo**: edit and run `examples/images.php` to test it.
+**Demo**: clone this repo, edit and run `examples/images.php` to test it.
 
 ```php
 use MaximeRenou\BingAI\BingAI;

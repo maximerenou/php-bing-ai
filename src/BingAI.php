@@ -33,4 +33,15 @@ class BingAI
     {
         return $this->getImageCreator()->create($prompt);
     }
+
+    public function checkCookie()
+    {
+        $html = Tools::request('https://www.bing.com', [
+            'cookie: _U=' . $this->cookie,
+            'method: GET',
+            'accept: text/html'
+        ]);
+
+        return strpos($html, '<span id="id_n" style="display:none" aria-hidden="true"></span>') === false;
+    }
 }
