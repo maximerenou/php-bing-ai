@@ -2,6 +2,7 @@
 
 # Bing AI client
 
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
 [![Latest Stable Version](https://img.shields.io/github/v/release/maximerenou/php-bing-ai)](https://packagist.org/packages/maximerenou/bing-ai)
 [![PHP version](https://img.shields.io/packagist/dependency-v/maximerenou/bing-ai/php)](https://packagist.org/packages/maximerenou/bing-ai)
 [![cURL extension required](https://img.shields.io/packagist/dependency-v/maximerenou/bing-ai/ext-curl)](https://packagist.org/packages/maximerenou/bing-ai)
