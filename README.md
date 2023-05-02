@@ -98,6 +98,23 @@ $conversation = $ai->createChatConversation()
 </details> 
 
 <details>
+  <summary>Tone choice</summary>
+
+```php
+use MaximeRenou\BingAI\Chat\Tone;
+
+$conversation = $ai->createChatConversation()
+    ->withTone(Tone::Creative); // Optional
+
+// Choices:
+// Tone::Balanced (default)
+// Tone::Creative
+// Tone::Precise
+```
+
+</details> 
+
+<details>
   <summary>Resume a conversation</summary>  
 
 If you want to resume a previous conversation, you can retrieve its identifiers:

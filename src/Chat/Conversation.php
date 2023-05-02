@@ -14,6 +14,7 @@ class Conversation
     public $signature;
 
     // User preferences
+    public $tone = Tone::Balanced;
     public $locale = 'en-US';
     public $market = 'en-US';
     public $region = 'US';
@@ -45,6 +46,12 @@ class Conversation
             'clientId' => $this->client_id,
             'conversationSignature' => $this->signature
         ];
+    }
+
+    public function withTone($tone)
+    {
+        $this->tone = $tone;
+        return $this;
     }
 
     public function withPreferences($locale = 'en-US', $market = 'en-US', $region = 'US')
@@ -183,8 +190,40 @@ class Conversation
                 'enable_debug_commands',
                 'disable_emoji_spoken_text',
                 'responsible_ai_policy_235',
-                'enablemm'
+                'enablemm',
+
+                // V2 options
+                'enbfpr',
+                'jb095',
+                'jbfv1',
+                'nojbfedge',
+                'weasgv2',
+                'dv3sugg',
+                'inputlanguage',
+                'rediscluster'
             ];
+
+            if ($this->tone === Tone::Creative) {
+                $options = array_merge($options, [
+                    'h3imaginative',
+                    'clgalileo',
+                    'gencontentv3',
+                    'gencontentv5'
+                ]);
+            }
+            elseif ($this->tone === Tone::Precise) {
+                $options = array_merge($options, [
+                    'h3precise',
+                    'clgalileo',
+                    'gencontentv5'
+                ]);
+            }
+            else {
+                $options = array_merge($options, [
+                    'galileo',
+                    'visualcreative',
+                ]);
+            }
 
             if (! $message->cache) {
                 $options[] = "nocache";
