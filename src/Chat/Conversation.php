@@ -27,6 +27,7 @@ class Conversation
     protected $current_messages;
     protected $user_messages_count;
     protected $max_messages_count;
+    protected $kicked = false;
 
     public function __construct($cookie, $identifiers = null, $invocations = 0)
     {
@@ -74,6 +75,16 @@ class Conversation
             return 1;
 
         return $this->max_messages_count - $this->user_messages_count;
+    }
+
+    public function kicked()
+    {
+        return $this->kicked;
+    }
+
+    public function ended()
+    {
+        return $this->kicked || $this->getRemainingMessages() <= 0;
     }
 
     public function createIdentifiers($cookie)
@@ -241,7 +252,11 @@ class Conversation
                             'InternalLoaderMessage',
                             'RenderCardRequest',
                             'AdsQuery',
-                            'SemanticSerp'
+                            'SemanticSerp',
+                            'Disengaged',
+                            'ActionRequest',
+                            'GenerateContentQuery',
+                            'SearchQuery',
                         ],
                         'sliceIds' => [],
                         'traceId' => $trace_id,
@@ -358,6 +373,8 @@ class Conversation
         foreach ($this->current_messages as $message) {
             if ($message->type == MessageType::Answer)
                 $text_parts[] = $message->toText();
+            elseif ($message->type == MessageType::Disengaged)
+                $this->kicked = true;
         }
 
         $this->current_text = trim(implode('. ', array_filter($text_parts)));

@@ -36,7 +36,7 @@ while (true) {
 
         // Print partial answer
         echo "- $text";
-        $padding = mb_strlen($text) + 2;
+        $padding = strlen($text) + 2;
     });
 
     // Erase the last line
@@ -45,6 +45,11 @@ while (true) {
 
     // Print final answer
     echo "- $text" . PHP_EOL;
+
+    if ($conversation->kicked()) {
+        echo "[Conversation ended]" . PHP_EOL;
+        break;
+    }
 
     $remaining = $conversation->getRemainingMessages();
 

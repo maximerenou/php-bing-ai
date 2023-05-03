@@ -19,7 +19,7 @@ class Message implements \JsonSerializable
 
         switch ($data['messageType'] ?? '') {
             case 'InternalSearchQuery':
-                $message->type = MessageType::SearchQuery;
+                $message->type = MessageType::InternalSearchQuery;
                 break;
             case 'InternalSearchResult':
                 $message->type = MessageType::SearchResult;
@@ -27,8 +27,26 @@ class Message implements \JsonSerializable
             case 'InternalLoaderMessage':
                 $message->type = MessageType::Loader;
                 break;
+            case 'SemanticSerp':
+                $message->type = MessageType::SemanticSerp;
+                break;
+            case 'Disengaged':
+                $message->type = MessageType::Disengaged;
+                break;
+            case 'AdsQuery':
+                $message->type = MessageType::AdsQuery;
+                break;
+            case 'ActionRequest':
+                $message->type = MessageType::ActionRequest;
+                break;
             case 'RenderCardRequest':
                 $message->type = MessageType::RenderRequest;
+                break;
+            case 'SearchQuery':
+                $message->type = MessageType::SearchQuery;
+                break;
+            case 'GenerateContentQuery':
+                $message->type = MessageType::GenerateQuery;
                 break;
             default:
                 $message->type = $data['author'] == 'user' ? MessageType::Prompt : MessageType::Answer;

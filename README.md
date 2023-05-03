@@ -13,6 +13,14 @@ This is an unofficial PHP client for **Bing AI**, including **Chat (GPT-4)** and
 
     composer require maximerenou/bing-ai
 
+## Demo
+
+This demo program uses both Chat and Image Creator:
+
+![Demo](examples/demo.gif)
+
+Source: `examples/multi.php`.
+
 ## Usage
 
 - [Chat AI](#chat-ai)
@@ -50,9 +58,7 @@ $valid = $ai->checkCookie();
 
 ### Chat AI
 
-![Chat demo](examples/demo-chat.gif)
-
-**Demo**: clone this repo, edit and run `examples/chat.php` to test it.
+**Demo**: clone this repo, edit and run `examples/chat.php`.
 
 ```php
 use MaximeRenou\BingAI\BingAI;
@@ -64,11 +70,11 @@ $ai = new BingAI($cookie);
 $conversation = $ai->createChatConversation();
 
 // $text - Text-only version of Bing's answer
-// $messages - Message objects array
-list($text, $messages) = $conversation->ask(new Prompt("Hello World"));
+// $cards - Message objects array
+list($text, $cards) = $conversation->ask(new Prompt("Hello World"));
 ```
 
-> Every "card" from Bing AI is fetched. Check `Message.php` to learn more 
+> `$cards` contains all "messages" exchanged with Bing AI. It can be text (prompt or answer), signals, suggestions, image generation requests, etc. Check `Message.php` to learn more 
 about its format.
 
 <details>
@@ -78,8 +84,8 @@ You may pass a function as second argument to get real-time progression:
 
 ```php
 // $text - Incomplete text version
-// $messages - Incomplete messages fleet
-list($final_text, $final_messages) = $conversation->ask($prompt, function ($text, $messages) {
+// $cards - Incomplete messages fleet
+list($final_text, $final_cards) = $conversation->ask($prompt, function ($text, $cards) {
     echo $text;
 });
 ```
@@ -149,7 +155,7 @@ $conversation->ask($prompt->withoutCache(), ...)
 </details>
 
 <details>
-  <summary>Throttling</summary>
+  <summary>Handle throttling  and kicks</summary>
 
 Bing is limiting messages count per conversations. You can monitor it by calling `getRemainingMessages()` after every interaction.
 
@@ -161,15 +167,29 @@ if ($remaining === 0) {
 }
 ```
 
+After every interaction, you should also check if you have been kicked from the conversation:
+
+```php
+if ($conversation->kicked()) {
+    // You have been kicked, you should start a new conversation
+}
+```
+
+You may combine both checks with:
+
+```php
+if ($conversation->ended()) {
+    // You reached the limit or have been kicked
+}
+```
+
 </details>
 
 ---------------------------------------
 
 ### Image Creator
 
-![Image Creator demo](examples/demo-images.gif)
-
-**Demo**: clone this repo, edit and run `examples/images.php` to test it.
+**Demo**: clone this repo, edit and run `examples/images.php`.
 
 ```php
 use MaximeRenou\BingAI\BingAI;
