@@ -1,20 +1,19 @@
 <?php
+require __DIR__ . '/../vendor/autoload.php';
 
 $cookie = "YOUR_COOKIE_HERE"; //@TODO change
 
 if ($cookie == 'YOUR_COOKIE_HERE') {
-    echo 'Please add your _U cookie to multi.php (line 3)' . PHP_EOL;
+    echo 'Please add your _U cookie to multi.php (line 4)' . PHP_EOL;
     exit(1);
 }
 
-require __DIR__ . '/../vendor/autoload.php';
+\MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
 
 $ai = new \MaximeRenou\BingAI\BingAI($cookie);
 
 $conversation = $ai->createChatConversation()
     ->withTone(\MaximeRenou\BingAI\Chat\Tone::Creative);
-
-\MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
 
 echo 'Type "q" to quit' . PHP_EOL;
 
@@ -29,20 +28,18 @@ while (true) {
     $padding = 0;
 
     list($text, $cards) = $conversation->ask($prompt, function ($text, $cards) use (&$padding) {
-        // Erase the last line
-        for ($i = 0; $i < $padding; $i++)
-            echo chr(8);
+        // Erase last line
+        echo str_repeat(chr(8), $padding);
 
         $text = trim($text);
 
         // Print partial answer
         echo "- $text";
-        $padding = strlen($text) + 2;
+        $padding = mb_strlen($text) + 2;
     });
 
-    // Erase the last line
-    for ($i = 0; $i < $padding; $i++)
-        echo chr(8);
+    // Erase last line
+    echo str_repeat(chr(8), $padding);
 
     // Print final answer
     echo "- $text" . PHP_EOL;
@@ -57,9 +54,7 @@ while (true) {
             $creator = $ai->createImages($card->text);
             $creator->wait();
 
-            // Result
-            for ($i = 0; $i < strlen($loader); $i++)
-                echo chr(8);
+            echo str_repeat(chr(8), strlen($loader));
 
             if ($creator->hasFailed()) {
                 echo "[Image generation failed]" . PHP_EOL;

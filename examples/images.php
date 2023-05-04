@@ -1,22 +1,20 @@
 <?php
+require __DIR__ . '/../vendor/autoload.php';
 
 $cookie = "YOUR_COOKIE_HERE"; //@TODO change
 
-if ($cookie == 'YOUR_COOKIE_HERE') { 
-    echo 'Please add your _U cookie to images.php (line 3)' . PHP_EOL;
+if ($cookie == 'YOUR_COOKIE_HERE') {
+    echo 'Please add your _U cookie to images.php (line 4)' . PHP_EOL;
     exit(1);
 }
 
-require __DIR__ . '/../vendor/autoload.php';
+\MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
 
 $ai = new \MaximeRenou\BingAI\BingAI($cookie);
-
-\MaximeRenou\BingAI\Tools::$debug = false; // Set true for verbose
 
 $boosts = $ai->getImageCreator()->getRemainingBoosts();
 
 echo "You have $boosts remaining boosts." . PHP_EOL;
-
 echo 'Type "q" to quit' . PHP_EOL;
 
 echo PHP_EOL . "> ";
@@ -37,10 +35,10 @@ if (! $creator->hasFailed()) {
     foreach ($images as $image) {
         echo "- $image" . PHP_EOL;
     }
-
-    exit(0);
 }
 else {
     echo 'Generation failed' . PHP_EOL;
     exit(1);
 }
+
+exit(0);
