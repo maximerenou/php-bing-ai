@@ -28,12 +28,15 @@ Source: `examples/multi.php`.
 
 First, you need to sign in on bing.com and get your `_U` cookie.
 
+> ❗ Make sure you send a first message to Bing Chat before using your cookie (CAPTCHA bypass)
+
 <details>
   <summary>How to get this cookie?</summary>
 
 1. Navigate to bing.com
 2. Sign in using your Microsoft account
-3. Back on bing.com, right-click and select "Inspect" - the browser console appears
+3. Back on bing.com, go to Bing Chat page and send a message (CAPTCHA verification occurs sometimes)
+4. Then, right-click and select "Inspect" - the browser console appears
 4. Go to "Application" tab
 5. Select "Cookies" > "https://www.bing.com" in the sidebar
 6. Search for "_U" cookie
@@ -52,7 +55,7 @@ $ai = new BingAI($cookie);
 $valid = $ai->checkCookie();
 ```
 
-</details> 
+</details>
 
 ---------------------------------------
 
