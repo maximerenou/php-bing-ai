@@ -9,6 +9,7 @@ class Prompt
     public $market;
     public $region;
     public $text;
+    public $image;
 
     public function __construct($text)
     {
@@ -26,6 +27,16 @@ class Prompt
     public function withoutCache()
     {
         $this->cache = false;
+        return $this;
+    }
+
+    public function withImage($image, $is_rawdata = false)
+    {
+        if (! $is_rawdata) {
+            $image = file_get_contents($image);
+        }
+
+        $this->image = $image;
         return $this;
     }
 }

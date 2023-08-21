@@ -16,4 +16,6 @@ class MessageType
     const ActionRequest = "action_request";
     const SearchQuery = "search_query";
     const GenerateQuery = "generate_query";
+    const Context = "context";
+    const Progress = "progress";
 }

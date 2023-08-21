@@ -8,6 +8,8 @@ class Conversation
 {
     const END_CHAR = '';
 
+    protected $cookie;
+
     // Conversation IDs
     public $id;
     public $client_id;
@@ -31,8 +33,10 @@ class Conversation
 
     public function __construct($cookie, $identifiers = null, $invocations = 0)
     {
+        $this->cookie = $cookie;
+
         if (! is_array($identifiers))
-            $identifiers = $this->createIdentifiers($cookie);
+            $identifiers = $this->createIdentifiers();
 
         $this->id = $identifiers['conversationId'];
         $this->client_id = $identifiers['clientId'];
@@ -87,10 +91,10 @@ class Conversation
         return $this->kicked || $this->getRemainingMessages() <= 0;
     }
 
-    public function createIdentifiers($cookie)
+    public function createIdentifiers()
     {
         $data = Tools::request("https://www.bing.com/turing/conversation/create", [
-            'cookie: _U=' . $cookie,
+            'cookie: _U=' . $this->cookie,
             'method: GET',
             'accept: application/json',
             "accept-language: {$this->region},{$this->locale};q=0.9",
@@ -104,6 +108,50 @@ class Conversation
             throw new \Exception("Failed to init conversation");
 
         return $data;
+    }
+
+    public function uploadImage($image_data)
+    {
+        $image_encoded = base64_encode($image_data);
+
+        $form = [
+            'knowledgeRequest' => json_encode([
+                "imageInfo" => (object) [],
+                "knowledgeRequest" => [
+                    "invokedSkills" => ["ImageById"],
+                    "subscriptionId" => "Bing.Chat.Multimodal",
+                    "invokedSkillsRequestData" => [
+                        "enableFaceBlur" => true
+                    ],
+                    "convoData" => [
+                        "convoid" => '', // $this->id ?
+                        "convotone" => 'Precise' // $this->tone ?
+                    ]
+                ]
+            ]),
+            'imageBase64' => $image_encoded
+        ];
+
+        Tools::debug("Image upload request: " . print_r($form, true));
+
+        $data = Tools::request("https://www.bing.com/images/kblob", [
+            'cookie: _U=' . $this->cookie,
+            'method: POST',
+            'Content-Type: multipart/form-data',
+            'referer: https://www.bing.com',
+        ], $form);
+
+        Tools::debug("Image upload response: $data");
+
+        $data = json_decode($data, true);
+
+        if (! is_array($data) || empty($data['blobId']) || empty($data['processedBlobId']))
+            throw new \Exception("Failed to upload image");
+
+        return [
+            'originalImageUrl' => 'https://www.bing.com/images/blob?bcid=' . $data['blobId'],
+            'imageUrl' => 'https://www.bing.com/images/blob?bcid=' . $data['processedBlobId'],
+        ];
     }
 
     public function ask(Prompt $message, $callback = null)
@@ -211,8 +259,16 @@ class Conversation
                 'weasgv2',
                 'dv3sugg',
                 'inputlanguage',
-                'rediscluster'
+                'rediscluster',
+
+                // V3 options
+                "iyxapbing",
+                "iycapbing",
+                "enpcktrk",
+                "logosv1",
+                "iyolojb",
             ];
+
 
             if ($this->tone === Tone::Creative) {
                 $options = array_merge($options, [
@@ -226,13 +282,20 @@ class Conversation
                 $options = array_merge($options, [
                     'h3precise',
                     'clgalileo',
-                    'gencontentv5'
+                    'gencontentv5',
+
+                    // V3 options
+                    'gencontentv3',
                 ]);
             }
             else {
                 $options = array_merge($options, [
                     'galileo',
                     'visualcreative',
+
+                    // V3 options
+                    'harmonyv3',
+                    'saharagenconv5',
                 ]);
             }
 
@@ -240,10 +303,30 @@ class Conversation
                 $options[] = "nocache";
             }
 
+            $message_data = [
+                'locale' => $message->locale ?? $this->locale,
+                'market' => $message->market ?? $this->market,
+                'region' => $message->region ?? $this->region,
+                'location' => $location,
+                'locationHints' => $locationHints,
+                'timestamp' => date('Y-m-d') . 'T' . date('H:i:sP'),
+                'author' => 'user',
+                'inputMethod' => 'Keyboard',
+                'text' => $message->text,
+                'messageType' => 'Chat',
+            ];
+
+            if (! empty($message->image)) {
+                $message_data = array_merge($message_data, $this->uploadImage($message->image));
+                $message->image = null;
+            }
+
             $params = [
                 'arguments' => [
                     [
                         'source' => 'cib',
+                        'verbosity' => 'verbose',
+                        'scenario' => 'SERP',
                         'optionsSets' => $options,
                         'allowedMessageTypes' => [
                             'Chat',
@@ -257,25 +340,19 @@ class Conversation
                             'ActionRequest',
                             'GenerateContentQuery',
                             'SearchQuery',
+
+                            // V3
+                            'Context',
+                            'Progress',
                         ],
                         'sliceIds' => [],
                         'traceId' => $trace_id,
                         'isStartOfSession' => $this->invocations == 0,
-                        'message' => [
-                            'locale' => $message->locale ?? $this->locale,
-                            'market' => $message->market ?? $this->market,
-                            'region' => $message->region ?? $this->region,
-                            'location' => $location,
-                            'locationHints' => $locationHints,
-                            'timestamp' => date('Y-m-d') . 'T' . date('H:i:sP'),
-                            'author' => 'user',
-                            'inputMethod' => 'Keyboard',
-                            'text' => $message->text,
-                            'messageType' => 'Chat',
-                        ],
+                        'message' => $message_data,
                         'conversationSignature' => $this->signature,
                         'participant' => ['id' => $this->client_id],
-                        'conversationId' => $this->id
+                        'conversationId' => $this->id,
+                        'spokenTextMode' => 'None',
                     ]
                 ],
                 'invocationId' => "{$this->invocations}",

@@ -48,6 +48,14 @@ class Message implements \JsonSerializable
             case 'GenerateContentQuery':
                 $message->type = MessageType::GenerateQuery;
                 break;
+                break;
+            case 'Context':
+                $message->type = MessageType::Context;
+                break;
+                break;
+            case 'Progress':
+                $message->type = MessageType::Progress;
+                break;
             default:
                 $message->type = $data['author'] == 'user' ? MessageType::Prompt : MessageType::Answer;
         }

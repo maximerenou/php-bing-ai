@@ -25,7 +25,16 @@ while (true) {
     if ($text == 'q')
         break;
 
-    $prompt = new \MaximeRenou\BingAI\Chat\Prompt($text);
+    if (strpos($text, '$image') !== false) {
+        $text = str_replace('$image', '', $text);
+        $prompt = new \MaximeRenou\BingAI\Chat\Prompt($text);
+        echo PHP_EOL . "Image path: ";
+        $image = rtrim(fgets(STDIN));
+        $prompt->withImage($image);
+    } else {
+        $prompt = new \MaximeRenou\BingAI\Chat\Prompt($text);
+    }
+
     $padding = 0;
 
     list($text, $cards) = $conversation->ask($prompt, function ($text, $cards) use (&$padding) {

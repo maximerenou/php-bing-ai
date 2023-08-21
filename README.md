@@ -1,3 +1,5 @@
+__New feature: send images in chat 🔥__
+
 ![Bing + PHP](logo.png)
 
 # Bing AI client
@@ -79,6 +81,23 @@ list($text, $cards) = $conversation->ask(new Prompt("Hello World"));
 
 > `$cards` contains all "messages" exchanged with Bing AI. It can be text (prompt or answer), signals, suggestions, image generation requests, etc. Check `Message.php` to learn more 
 about its format.
+
+<details>
+  <summary>🔥 Image analysis</summary>
+
+You may attach an image to your message:
+
+```php
+$prompt = new Prompt("How cute is this animal?");
+$prompt->withImage('/path/to/panda.png');
+//or: $prompt->withImage($raw_image_data, true);
+
+$conversation->ask($prompt, ...);
+```
+
+> **Try it!** Type _`$image`_ at the end of your message with `examples/chat.php`.
+
+</details> 
 
 <details>
   <summary>Real-time / progressive answer</summary>
