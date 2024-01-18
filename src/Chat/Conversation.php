@@ -38,9 +38,9 @@ class Conversation
         if (! is_array($identifiers))
             $identifiers = $this->createIdentifiers();
 
-        $this->id = $identifiers['conversationId'];
-        $this->client_id = $identifiers['clientId'];
-        $this->signature = $identifiers['conversationSignature'];
+        $this->id = $identifiers['conversationId'] ?? null;
+        $this->client_id = $identifiers['clientId'] ?? null;
+        $this->signature = $identifiers['conversationSignature'] ?? null;
         $this->invocations = $invocations - 1;
     }
 
